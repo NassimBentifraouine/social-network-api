@@ -8,12 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once __DIR__ . '/utils/response.php';
 require_once __DIR__ . '/controllers/UserController.php';
+require_once __DIR__ . '/controllers/PostController.php';
+require_once __DIR__ . '/controllers/CategoryController.php';
+require_once __DIR__ . '/controllers/CommentController.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = trim($uri, '/');
+$segments = explode('/', $uri);
+
+$resource = $segments[0] ?? '';
+$id = $segments[1] ?? null;
 
 try {
-    switch ($uri) {
+    switch ($resource) {
         case '':
         case 'index.php':
             Response::json(['message' => 'API en ligne']);
@@ -24,8 +31,21 @@ try {
             $controller->handle();
             break;
 
+        case 'posts':
+            $controller = new PostController();
+            $controller->handle($id);
+            break;
+
+        case 'categories':
+            (new CategoryController())->handle($id);
+            break;
+
+        case 'comments':
+            (new CommentController())->handle($id);
+            break;
+
         default:
-            Response::json(['error' => 'Page introuvable'], 404);
+            Response::json(['error' => 'Ressource introuvable'], 404);
             break;
     }
 } catch (Exception $e) {
