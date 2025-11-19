@@ -1,90 +1,121 @@
-# 🌐 API RESTful PHP -- Social Network
+# API RESTful PHP - Réseau Social (MongoDB)
 
-### PHP Natif • MongoDB Atlas • Architecture MVC
+Projet de création d'une API REST pour un réseau social, utilisant **PHP
+Natif** et une base de données **MongoDB Atlas**. Le projet suit une
+architecture **MVC** (Modèle-Vue-Contrôleur) pour une meilleure
+organisation du code.
 
-![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
-![MVC](https://img.shields.io/badge/Architecture-MVC-blueviolet)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
+## 📋 Prérequis & Installation
 
-## 📑 Sommaire
+### 1. Récupération du projet
 
--   Aperçu du Projet
--   Technologies
--   Installation
--   Endpoints
--   Modèles JSON
--   Exemples cURL
--   Structure du Projet
+``` bash
+gh repo clone NassimBentifraouine/social-network-api
+cd social-network-api
+```
 
-## 🚀 Aperçu du Projet
+### 2. Installation des dépendances
 
-Cette API RESTful permet de gérer un réseau social complet :
-utilisateurs, posts, likes, follows, commentaires, catégories.
-Développée en PHP natif avec MongoDB Atlas en MVC.
+Le projet utilise le driver MongoDB pour PHP.
 
-## 🧰 Technologies
-
-  Technologie     Rôle
-  --------------- --------------
-  PHP 8+          Backend
-  MongoDB Atlas   Base NoSQL
-  Composer        Dépendances
-  MVC             Organisation
-
-## ⚙️ Installation
-
-### 1. Cloner
-
-    gh repo clone NassimBentifraouine/social-network-api
-    cd social-network-api
-
-### 2. Dépendances
-
-    composer install
+``` bash
+composer install
+```
 
 ### 3. Configuration
 
-Aucune action requise, connexion MongoDB prête.
+L'API est déjà configurée pour se connecter au cluster MongoDB Atlas via
+le fichier `config/database.php`.\
+Aucune action supplémentaire n'est requise.
 
-### 4. Serveur
+### 4. Lancement du serveur
 
-    php -S localhost:8080
+``` bash
+php -S localhost:8080
+```
 
-## 📡 Endpoints
+L'API sera accessible sur : **http://localhost:8080**
 
-### Users
+------------------------------------------------------------------------
 
--   GET /users\
--   GET /users/count\
--   GET /users/usernames?page=1\
--   POST /users
+## 🎁 Interface Graphique de Test (Bonus)
 
-### Posts
+Un Dashboard de test est inclus dans le projet, permettant de tester
+l'API sans ligne de commande.
 
--   GET /posts\
--   GET /posts/count\
--   GET /posts/last-five\
--   GET /posts/no-comments\
--   GET /posts/search?word=mot\
--   GET /posts/date-filter?type=before&date=YYYY-MM-DD\
--   POST /posts\
--   DELETE /posts/{id}
+➡️ Assurez-vous que le serveur est lancé\
+➡️ Ouvrez : **http://localhost:8080/test.html**
 
-### Likes & Follows
+Fonctionnalités : - création d'utilisateurs\
+- publication de posts\
+- affichage des réponses JSON
 
--   GET /likes/average?category_id=ID\
--   POST /likes\
--   GET /follows/top-three\
--   POST /follows
+------------------------------------------------------------------------
 
-### Categories & Comments
+## 🚀 Liste des Endpoints
 
-CRUD complet pour `/categories` et `/comments`.
+### 🔹 Utilisateurs (Users)
 
-## 📦 Modèles JSON
+  Méthode   URL                         Description
+  --------- --------------------------- --------------------------------
+  GET       `/users`                    Liste de tous les utilisateurs
+  GET       `/users/count`              Nombre total d'inscrits
+  GET       `/users/usernames?page=1`   Pagination : 3 pseudos / page
+  POST      `/users`                    Créer un utilisateur
 
-### User
+------------------------------------------------------------------------
+
+### 🔹 Publications (Posts)
+
+  -----------------------------------------------------------------------------------------------------------
+  Méthode               URL                                                Description
+  --------------------- -------------------------------------------------- ----------------------------------
+  GET                   `/posts`                                           Liste triée par date
+
+  GET                   `/posts/count`                                     Nombre total de posts
+
+  GET                   `/posts/last-five`                                 5 derniers posts
+
+  GET                   `/posts/no-comments`                               Posts sans commentaires
+
+  GET                   `/posts/search?word=mot`                           Recherche par mot-clé
+
+  GET                   `/posts/date-filter?type=before&date=YYYY-MM-DD`   Filtre date avant/après
+
+  POST                  `/posts`                                           Créer un post
+
+  DELETE                `/posts/{id}`                                      Supprimer un post
+  -----------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### 🔹 Interactions (Likes & Follows)
+
+  ------------------------------------------------------------------------------------------
+  Méthode               URL                               Description
+  --------------------- --------------------------------- ----------------------------------
+  GET                   `/likes/average?category_id=ID`   Moyenne des likes par catégorie
+
+  POST                  `/likes`                          Liker un post (doublons gérés)
+
+  GET                   `/follows/top-three`              Top 3 des utilisateurs les plus
+                                                          suivis
+
+  POST                  `/follows`                        Suivre un utilisateur
+  ------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### 🔹 Autres (Categories & Comments)
+
+-   **Categories** : CRUD complet → `/categories`\
+-   **Comments** : CRUD complet → `/comments`
+
+------------------------------------------------------------------------
+
+## 📦 Modèles de Données (JSON)
+
+### 🧍 User
 
 ``` json
 {
@@ -94,7 +125,7 @@ CRUD complet pour `/categories` et `/comments`.
 }
 ```
 
-### Post
+### 📝 Post
 
 ``` json
 {
@@ -104,7 +135,7 @@ CRUD complet pour `/categories` et `/comments`.
 }
 ```
 
-### Like
+### 👍 Like
 
 ``` json
 {
@@ -113,7 +144,7 @@ CRUD complet pour `/categories` et `/comments`.
 }
 ```
 
-### Follow
+### 👥 Follow
 
 ``` json
 {
@@ -122,24 +153,36 @@ CRUD complet pour `/categories` et `/comments`.
 }
 ```
 
+------------------------------------------------------------------------
+
 ## 🧪 Exemples cURL
 
 ### 1. Créer un utilisateur
 
-    curl -X POST -H "Content-Type: application/json" -d '{"username":"Alice","email":"alice@test.com","password":"pass"}' http://localhost:8080/users
+``` bash
+curl -X POST -H "Content-Type: application/json" \
+-d '{"username": "Alice", "email": "alice@test.com", "password": "pass"}' \
+http://localhost:8080/users
+```
 
-### 2. Top 3 influenceurs
+### 2. Récupérer le Top 3 influenceurs
 
-    curl http://localhost:8080/follows/top-three
+``` bash
+curl http://localhost:8080/follows/top-three
+```
 
-### 3. Recherche "Voyage"
+### 3. Rechercher un post contenant "Voyage"
 
-    curl "http://localhost:8080/posts/search?word=Voyage"
+``` bash
+curl "http://localhost:8080/posts/search?word=Voyage"
+```
 
-## 📂 Structure
+------------------------------------------------------------------------
 
-    config/        → Connexion MongoDB  
-    controllers/   → Logique métier  
-    models/        → CRUD & agrégations  
-    utils/         → JSON & headers  
-    index.php      → Routeur  
+## 📂 Structure du Projet
+
+    config/       → Connexion à la base (Singleton)
+    controllers/  → Logique métier
+    models/       → CRUD & agrégations MongoDB
+    utils/        → Réponses JSON & Headers
+    index.php     → Routeur principal
