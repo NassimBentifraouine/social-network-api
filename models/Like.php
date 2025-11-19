@@ -44,4 +44,24 @@ class Like {
             return ['error' => 'ID Invalide'];
         }
     }
+
+    public function getAverageByCategory($categoryId) {
+        // trouve tous les posts de cette catégorie
+        $db = Database::getConnection();
+        $posts = $db->posts->find(['category_id' => (int)$categoryId])->toArray();
+
+        if (empty($posts)) return 0;
+
+        $totalLikes = 0;
+        $countPosts = count($posts);
+
+        // pour chaque post, compte les likes
+        foreach ($posts as $post) {
+            $likes = $this->collection->countDocuments(['post_id' => (string)$post['_id']]);
+            $totalLikes += $likes;
+        }
+
+        // calcule moyenne
+        return $countPosts > 0 ? round($totalLikes / $countPosts, 2) : 0;
+    }
 }

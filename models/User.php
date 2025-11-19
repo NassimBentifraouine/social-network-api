@@ -26,4 +26,25 @@ class User {
 
         return ['_id' => (string)$insert->getInsertedId(), 'message' => 'User créé'];
     }
+
+    // total d'inscrits
+    public function count() {
+        return $this->collection->countDocuments();
+    }
+
+    // pagination des pseudos (3 par page)
+    public function getPaginated($page) {
+        $limit = 3;
+        $skip = ($page - 1) * $limit; // Calcul du décalage
+
+        // ne récupère que le champ 'username'
+        return $this->collection->find(
+            [],
+            [
+                'limit' => $limit,
+                'skip' => $skip,
+                'projection' => ['username' => 1, '_id' => 0]
+            ]
+        )->toArray();
+    }
 }

@@ -13,7 +13,15 @@ class LikeController {
         $method = $_SERVER['REQUEST_METHOD'];
 
         if ($method === 'GET') {
-            Response::json($this->model->getAll());
+            if ($id === 'average') {
+                // URL: /likes/average?category_id=2
+                $catId = $_GET['category_id'] ?? 0;
+                $avg = $this->model->getAverageByCategory($catId);
+                Response::json(['average_likes' => $avg]);
+            }
+            else {
+                Response::json($this->model->getAll());
+            }
         }
         elseif ($method === 'POST') {
             $data = json_decode(file_get_contents("php://input"), true);
@@ -21,9 +29,6 @@ class LikeController {
         }
         elseif ($method === 'DELETE' && $id) {
             Response::json($this->model->delete($id));
-        }
-        else {
-            Response::json(['message' => 'Action non supportée'], 405);
         }
     }
 }

@@ -13,7 +13,23 @@ class FollowController {
         $method = $_SERVER['REQUEST_METHOD'];
 
         if ($method === 'GET') {
-            Response::json($this->model->getAll());
+            // Route: /follows/top-three
+            if ($id === 'top-three') {
+                Response::json($this->model->getTopThree());
+            }
+            // Route: /follows/count-followers?user_id=1
+            elseif ($id === 'count-followers') {
+                $uid = (int)($_GET['user_id'] ?? 0);
+                Response::json(['followers' => $this->model->countFollowers($uid)]);
+            }
+            // Route: /follows/count-following?user_id=1
+            elseif ($id === 'count-following') {
+                $uid = (int)($_GET['user_id'] ?? 0);
+                Response::json(['following' => $this->model->countFollowing($uid)]);
+            }
+            else {
+                Response::json($this->model->getAll());
+            }
         }
         elseif ($method === 'POST') {
             $data = json_decode(file_get_contents("php://input"), true);
@@ -21,9 +37,6 @@ class FollowController {
         }
         elseif ($method === 'DELETE' && $id) {
             Response::json($this->model->delete($id));
-        }
-        else {
-            Response::json(['message' => 'Action non supportée'], 405);
         }
     }
 }

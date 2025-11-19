@@ -49,4 +49,24 @@ class Follow {
             return ['error' => 'ID Invalide'];
         }
     }
+
+    // Top 3 des personnes les plus suivies
+    public function getTopThree() {
+        $pipeline = [
+            ['$group' => ['_id' => '$user_follow_id', 'count' => ['$sum' => 1]]], // Grouper par personne suivie
+            ['$sort'  => ['count' => -1]], // Trier du plus grand au plus petit
+            ['$limit' => 3] // Garder les 3 premiers
+        ];
+        return $this->collection->aggregate($pipeline)->toArray();
+    }
+
+    // followers d'un user
+    public function countFollowers($userId) {
+        return $this->collection->countDocuments(['user_follow_id' => (int)$userId]);
+    }
+
+    // personnes suivies par un user
+    public function countFollowing($userId) {
+        return $this->collection->countDocuments(['user_id' => (int)$userId]);
+    }
 }
