@@ -11,6 +11,8 @@ require_once __DIR__ . '/controllers/UserController.php';
 require_once __DIR__ . '/controllers/PostController.php';
 require_once __DIR__ . '/controllers/CategoryController.php';
 require_once __DIR__ . '/controllers/CommentController.php';
+require_once __DIR__ . '/controllers/LikeController.php';
+require_once __DIR__ . '/controllers/FollowController.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = trim($uri, '/');
@@ -42,6 +44,14 @@ try {
 
         case 'comments':
             (new CommentController())->handle($id);
+            break;
+
+        case 'likes':
+            (new LikeController())->handle($id);
+            break;
+
+        case 'follows':
+            (new FollowController())->handle($id);
             break;
 
         default:
